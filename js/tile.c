@@ -1,24 +1,30 @@
 #include <stdint.h>
 
-typeof struct {
+typedef struct {
   uint8_t x, y;
 } Vector2;
 
-typeof struct {
+typedef struct {
   uint8_t x, y;
-  uint8_t value; // Yes, this is just indexed from a table in this version
+  uint16_t value;
 
-  Vector2 previousPosition;
+  Vector2 prevPos;
   Vector2 mergedFrom; // Tracks tiles that merged together
 } Tile;
 
-void Tile_savePosition(Tile* t, Vector2 prevPos) {
-  t->previousPosition = prevPos;
+void Tile_construct(Tile* t, Vector2 pos, uint8_t value) {
+  t->x                = pos.x;
+  t->y                = pos.y;
+  t->value            = value == 1 ? value : 2; // make sure the value can't be less than two so you don't go adding zeros 😂
 }
 
-void Tile_updatePosition(Tile* t, Vector2 position) {
-  t->x = position.x;
-  t->y = position.y;
+void Tile_savePosition(Tile* t, Vector2 prevPos) {
+  t->prevPos = prevPos;
+}
+
+void Tile_updatePosition(Tile* t, Vector2 pos) {
+  t->x = pos.x;
+  t->y = pos.y;
 }
 
 /*Tile.prototype.serialize = function () {
